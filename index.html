@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fluffy Flint</title>
+  <link href="https://fonts.googleapis.com/css?family=Noto+Sans:400,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --main-bg: #fff;
+      --main-text: #111;
+      --sub-text: #444;
+      --nav-bg: rgba(255,255,255,0.85);
+      --nav-shadow: 0 4px 24px 0 rgba(0,0,0,0.08);
+      --nav-radius: 2em;
+      --highlight: #ffe066;
+      --card-overlay: rgba(0,0,0,0.35);
+      --card-radius: 1.2em;
+      --card-shadow: 0 2px 16px 0 rgba(0,0,0,0.10);
+      --btn-border: #222;
+      --btn-radius: 0.7em;
+      --footer-bg: #f7f7f7;
+    }
+    html, body {
+      margin: 0; padding: 0;
+      font-family: 'Noto Sans', Arial, Helvetica, sans-serif;
+      background: var(--main-bg);
+      color: var(--main-text);
+      min-height: 100%;
+    }
+    body { min-height: 100vh; }
+    /* Nav Bar */
+    .navbar {
+      position: fixed; top: 2em; left: 0; right: 0;
+      width: 80vw; max-width: 1200px; margin: 0 auto;
+      background: var(--nav-bg);
+      border-radius: var(--nav-radius);
+      box-shadow: var(--nav-shadow);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.7em 2.5em; z-index: 100;
+      backdrop-filter: blur(8px);
+    }
+    .navbar-logo { font-weight: 700; font-size: 1.6em; letter-spacing: 0.05em; }
+    .navbar-links {
+      display: flex; gap: 2.2em;
+      font-size: 1.1em;
+      align-items: center;
+    }
+    .navbar-link {
+      text-decoration: none; color: var(--main-text); position: relative; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .navbar-link.active::after {
+      content: "";
+      display: block;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--highlight);
+      position: absolute; left: 0; right: 0; bottom: -8px;
+    }
+    .navbar-link:hover { color: #e0a800; }
+    /* Banner */
+    .banner {
+      min-height: 70vh;
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1500&q=80') center/cover no-repeat;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; position: relative;
+      padding-top: 7em;
+    }
+    .banner::after {
+      content: "";
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom,rgba(255,255,255,0.1) 60%,rgba(255,255,255,0.7) 100%);
+      z-index: 1;
+    }
+    .banner-content { position: relative; z-index: 2; }
+    .banner-title {
+      font-size: 2.8em; font-weight: 700; margin-bottom: 0.3em;
+      letter-spacing: 0.01em;
+    }
+    .banner-subtitle {
+      font-size: 1.2em; color: var(--sub-text); margin-bottom: 1.5em;
+      font-weight: 400;
+    }
+    .banner-btn {
+      display: inline-block; padding: 0.7em 2.2em;
+      border: 2px solid var(--btn-border); border-radius: var(--btn-radius);
+      background: transparent; color: var(--main-text); font-size: 1.1em; font-weight: 500;
+      cursor: pointer; margin-bottom: 2em; transition: background 0.2s, color 0.2s;
+    }
+    .banner-btn:hover { background: var(--main-text); color: #fff; }
+    .banner-arrow {
+      display: block; margin: 0 auto; width: 2em; height: 2em;
+      border: none; background: none; font-size: 2em; color: var(--main-text); cursor: pointer;
+      animation: bounce 1.5s infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(12px); }
+    }
+    /* Projects Section */
+    .projects-section {
+      background: #f5f5f5; padding: 4em 0 2em 0; margin-top: -2em;
+    }
+    .projects-title {
+      text-align: center; font-size: 2em; font-weight: 700; margin-bottom: 0.2em;
+    }
+    .projects-subtitle {
+      text-align: center; color: var(--sub-text); font-size: 1.1em; margin-bottom: 2.5em;
+    }
+    .projects-grid {
+      display: flex; flex-wrap: wrap; gap: 1.5em; justify-content: center;
+      max-width: 1200px; margin: 0 auto 2em auto;
+    }
+    .project-card {
+      flex: 1 1 22%; min-width: 240px; max-width: 300px; height: 370px;
+      background: #222; color: #fff; border-radius: var(--card-radius);
+      box-shadow: var(--card-shadow); position: relative; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      margin-bottom: 1em; transition: box-shadow 0.2s, filter 0.2s;
+    }
+    .project-card:hover { box-shadow: 0 8px 32px 0 rgba(0,0,0,0.18); filter: brightness(1.08); }
+    .project-bg {
+      position: absolute; inset: 0; z-index: 1;
+      background-size: cover; background-position: center;
+      filter: brightness(0.7);
+    }
+    .project-overlay {
+      position: absolute; inset: 0; background: var(--card-overlay); z-index: 2;
+    }
+    .project-content {
+      position: relative; z-index: 3; padding: 1.5em; display: flex; flex-direction: column; gap: 0.7em;
+    }
+    .project-index { font-size: 1.1em; font-weight: 700; opacity: 0.95; }
+    .project-title { font-size: 1.2em; font-weight: 700; margin-bottom: 0.2em; }
+    .project-desc { font-size: 1em; color: #eaeaea; margin-bottom: 0.2em; }
+    .project-tags { font-size: 0.95em; color: #ffe066; font-weight: 500; }
+    .project-btn {
+      margin-top: 0.7em; align-self: flex-start;
+      background: none; border: none; color: #fff; font-size: 1.1em; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; gap: 0.5em;
+      border-bottom: 2px solid #fff; padding: 0 0 0.1em 0;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .project-btn:hover { color: var(--highlight); border-color: var(--highlight); }
+    .more-projects-btn {
+      display: block; margin: 2em auto 0 auto; padding: 0.8em 2.5em;
+      border: 2px solid var(--btn-border); border-radius: var(--btn-radius);
+      background: #fff; color: var(--main-text); font-size: 1.1em; font-weight: 500;
+      cursor: pointer; transition: background 0.2s, color 0.2s;
+    }
+    .more-projects-btn:hover { background: var(--main-text); color: #fff; }
+    /* Footer */
+    footer {
+      background: var(--footer-bg); padding: 2.5em 0 1.2em 0; text-align: center; margin-top: 3em;
+      border-top: 1px solid #e0e0e0;
+    }
+    .footer-main { font-weight: 700; font-size: 1.1em; letter-spacing: 0.04em; margin-bottom: 0.7em; }
+    .footer-links { display: flex; justify-content: center; gap: 2em; margin-bottom: 1.2em; }
+    .footer-link { color: var(--main-text); text-decoration: none; font-size: 1em; font-weight: 500; }
+    .footer-link:hover { color: #e0a800; }
+    .footer-socials { display: flex; justify-content: center; gap: 1.2em; margin-bottom: 0.7em; }
+    .footer-socials a { color: var(--main-text); font-size: 1.2em; text-decoration: none; }
+    .footer-socials a:hover { color: #e0a800; }
+    .footer-copy { color: #888; font-size: 0.95em; }
+    /* Responsive */
+    @media (max-width: 900px) {
+      .navbar { width: 95vw; padding: 0.7em 1em; }
+      .projects-grid { flex-direction: column; align-items: center; }
+      .project-card { max-width: 95vw; min-width: 220px; }
+    }
+    @media (max-width: 600px) {
+      .navbar { width: 99vw; padding: 0.7em 0.5em; }
+      .navbar-links { gap: 1em; font-size: 1em; }
+      .banner-title { font-size: 2em; }
+      .projects-title { font-size: 1.3em; }
+      .project-card { height: 260px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Nav Bar -->
+  <nav class="navbar">
+    <div class="navbar-logo">FF</div>
+    <div class="navbar-links">
+      <a href="#" class="navbar-link active">HOME</a>
+      <a href="#projects" class="navbar-link">WORKS</a>
+      <a href="#blog" class="navbar-link">BLOG</a>
+      <a href="#about" class="navbar-link">ABOUT</a>
+      <a href="#contacts" class="navbar-link">CONTACTS</a>
+    </div>
+  </nav>
+  <!-- Banner -->
+  <section class="banner">
+    <div class="banner-content">
+      <div class="banner-title">Hello!<br>This Is Fluffy Flint.</div>
+      <div class="banner-subtitle">Lorem ipsum dolor sit amet consectetur. Ultricies urna pharetra sociis scelerisque. Vulputate pellentesque elit vulputate sit etiam proin at neque ullamcorper.</div>
+      <button class="banner-btn" onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})">More</button>
+      <button class="banner-arrow" onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})">&#8595;</button>
+    </div>
+  </section>
+  <!-- Projects Section -->
+  <section class="projects-section" id="projects">
+    <div class="projects-title">Projects</div>
+    <div class="projects-subtitle">Lorem ipsum dolor sit amet consectetur. Eget dis facilisis lorem a facilisis nulla pellentesque senectus mattis.</div>
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="project-bg" style="background-image:url('https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80');"></div>
+        <div class="project-overlay"></div>
+        <div class="project-content">
+          <div class="project-index">01</div>
+          <div class="project-title">Bloomix</div>
+          <div class="project-desc">Lorem ipsum dolor sit amet consectetur. Eget dis facilisis lorem a senectus mattis.<span class="project-tags"> #Sustainable #Wood #Playful</span></div>
+          <button class="project-btn">Learn More <span>&#8594;</span></button>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-bg" style="background-image:url('https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=600&q=80');"></div>
+        <div class="project-overlay"></div>
+        <div class="project-content">
+          <div class="project-index">02</div>
+          <div class="project-title">Coral & Tetrapod</div>
+          <div class="project-desc">Lorem ipsum dolor sit amet consectetur. Eget dis facilisis lorem a senectus mattis.<span class="project-tags"> #Sustainable #Wood #Playful</span></div>
+          <button class="project-btn">Learn More <span>&#8594;</span></button>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-bg" style="background-image:url('https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80');"></div>
+        <div class="project-overlay"></div>
+        <div class="project-content">
+          <div class="project-index">03</div>
+          <div class="project-title">Overclock Mini Biz</div>
+          <div class="project-desc">Lorem ipsum dolor sit amet consectetur. Eget dis facilisis lorem a senectus mattis.<span class="project-tags"> #Sustainable #Wood #Playful</span></div>
+          <button class="project-btn">Learn More <span>&#8594;</span></button>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-bg" style="background-image:url('https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80');"></div>
+        <div class="project-overlay"></div>
+        <div class="project-content">
+          <div class="project-index">04</div>
+          <div class="project-title">Freenote</div>
+          <div class="project-desc">Lorem ipsum dolor sit amet consectetur. Eget dis facilisis lorem a senectus mattis.<span class="project-tags"> #Sustainable #Wood #Playful</span></div>
+          <button class="project-btn">Learn More <span>&#8594;</span></button>
+        </div>
+      </div>
+    </div>
+    <button class="more-projects-btn">More Projects <span>&#8594;</span></button>
+  </section>
+  <!-- Footer -->
+  <footer>
+    <div class="footer-main">HE TING YI</div>
+    <div class="footer-links">
+      <a class="footer-link" href="#">HOME</a>
+      <a class="footer-link" href="#projects">WORKS</a>
+      <a class="footer-link" href="#about">ABOUT</a>
+      <a class="footer-link" href="#contacts">CONTACT</a>
+    </div>
+    <div class="footer-socials">
+      <a href="#" title="Behance">Bē</a>
+      <a href="#" title="Upwork">Up</a>
+      <a href="#" title="LinkedIn">in</a>
+      <a href="#" title="Instagram">&#128247;</a>
+      <a href="#" title="Mail">&#9993;</a>
+    </div>
+    <div class="footer-copy">Copyright © 2026 Ting-Yi He. All rights reserved.</div>
+  </footer>
+</body>
+</html>
